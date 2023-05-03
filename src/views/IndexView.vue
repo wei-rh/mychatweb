@@ -31,7 +31,9 @@ export default {
       currentMessage: "", // 用于存储当前消息
       page: 0, // 记录当前页码
       loading: false,
-      loadtext: '显示之前的消息'
+      loadtext: '显示之前的消息',
+      is_stream: false,
+      is_history: true
     };
   },
   mounted() {
@@ -41,15 +43,30 @@ export default {
     addMessage(text, sender) {
       this.historyMessage.push({ role: sender, content: text });
     },
+    updateMessage(newContent) {
+      const lastMessage = this.historyMessage[this.historyMessage.length - 1];
+      lastMessage.content += newContent;
+    },
     sendMessage() {
       const message = this.currentMessage.trim();
       this.addMessage(message, 'user');
       this.currentMessage = ''
-      this.$axios.get("/api/onechat/", {params:{sid:0,input_text:message}}).then(res =>{
-      this.addMessage(res.data.answer,'bot')
+      this.$axios.post("/api/onechat/", { "sid": 0, "input_text": message, 'is_history': this.is_history }).then(res => {
+        this.addMessage(res.data.answer, 'bot')
       })
-
-
+    },
+    async sendStreamMessage() {
+      const message = this.currentMessage.trim();
+      this.addMessage(message, 'user');
+      this.currentMessage = '';
+      const self = this;
+      this.$axios.post('/api/onechatstream/', {"sid":"0", "input_text": message, 'is_history': this.is_history}, { responseType: 'stream' }).then(async function(res){ // 添加 async 关键字
+        self.addMessage('', 'bot')
+        for await (let chunk of res.data) { // 添加 for await 循环
+          self.updateMessage(chunk)
+          console.log(self.historyMessage[self.historyMessage.length-1]['content'])
+        }
+      });
     },
     getChatHistory() {
       // 请求聊天记录
@@ -68,16 +85,7 @@ export default {
       console.log(111)
       this.page++; // 页码加1
       this.getChatHistory(); // 获取下一页聊天记录
-    },
-    sendMessageOnEnter(event) {
-      console.log(event.keyCode)
-      // 如果按下的键是 Enter，则调用 sendMessage 方法
-      if (event.keyCode === 13) {
-        event.preventDefault(); // 阻止默认行为（换行）
-        this.sendMessage()
-      }
     }
-
   },
 };
 </script>

@@ -11,6 +11,7 @@
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
     "element-plus": "^2.3.4",
+    "marked": "^5.0.0",
     "vue": "^3.2.13",
     "vue-router": "^4.1.6"
   },
@@ -36,8 +37,8 @@
       "parser": "@babel/eslint-parser"
     },
     "rules": {
-      "no-unused-vars":"off",
-      "error":"off"
+      "no-unused-vars": "off",
+      "error": "off"
     }
   },
   "browserslist": [
