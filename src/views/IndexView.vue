@@ -53,7 +53,9 @@ export default {
       this.currentMessage = ''
       this.$axios.post("/api/onechat/", { "sid": 0, "input_text": message, 'is_history': this.is_history }).then(res => {
         this.addMessage(res.data.answer, 'bot')
-      })
+      }).catch(error => {
+              this.$message.error(error.response.data[0])
+            })
     },
     async sendStreamMessage() {
       const message = this.currentMessage.trim();

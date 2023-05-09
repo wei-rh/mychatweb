@@ -1,19 +1,18 @@
 //login组件
 <template>
   <div class="box">
-    <h3>登录页面</h3>
+    <h3>重置密码</h3>
     <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="手机号" prop="username">
+      <el-form-item label="手机号" prop="phone_number">
         <el-input type="number" v-model="ruleForm.username" autocomplete="off"></el-input>
       </el-form-item>
-      <el-form-item label="密      码" prop="pass">
+      <el-form-item label="密码" prop="pass">
         <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
       </el-form-item>
       
       <div class="item-button">
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-        <div class="toregister"><router-link to="/register" class="link" >还没有账号？去注册</router-link></div>
-        <div class="to_left"><router-link to="/newpass" class="link">忘记密码</router-link></div>
+        <div class="toregister"><router-link to="/register" class="link" >已有账号？去登录</router-link></div>
       </div>
      
     </el-form>
@@ -34,7 +33,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post("/api/login/", { "username": this.ruleForm.username, "password": this.ruleForm.password })
+          this.$axios.post("/api/newpass/", { "username": this.ruleForm.username, "password": this.ruleForm.password })
             .then(res => {
               this.$message({type: 'success', message: '登录成功'})
               localStorage.setItem("elementToken", 'Bearer ' + res.data.token)
@@ -43,7 +42,8 @@ export default {
               this.$router.push("/index")
             })
             .catch(error => {
-              this.$message.error(error.response.data[0])
+              console.log(error.response)
+              this.$message.error('账号密码不对！')
             })
 
         }

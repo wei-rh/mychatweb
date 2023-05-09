@@ -12,28 +12,41 @@ axios.interceptors.request.use(config =>{
     return config
 })
 
-
-//全局前置守卫
-router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  
-  if (requiresAuth) {
-    axios.get('/api/is_token/')
-      .then(response => {
-        // 判断token是否有效
-        if (response.data.valid) {
-          next() // 有效，继续导航
-        } else {
-          next({ path: '/login' }) // 无效，跳转到登录页
-        }
+axios.interceptors.response.use(
+  response => {
+    // 处理正常响应
+    return response
+  },
+  error => {
+    const originalRequest = error.config
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+      return new Promise((resolve, reject) => {
+        axios.post('/api/refresh/', {"refresh": localStorage.refresh})
+          .then(response => {
+            console.log(localStorage.refresh)
+            if (response.status === 200) {
+              console.log(response)
+              console.log(response.data.access)
+              localStorage.setItem("elementToken", 'Bearer ' + response.data.access)
+              originalRequest.headers.authorization = `Bearer ${response.data.access}`
+              resolve(axios(originalRequest))
+            } else {
+              reject(new Error('Refresh token request failed.'))
+            }
+          })
+          .catch(error => {
+            router.push('/login')
+            reject(error)
+          })
       })
-      .catch(error => {
-        next({ path: '/login' }) // 请求失败，跳转到登录页
-      })
-  } else {
-    next()
+    } else {
+      // Handle other errors
+      return Promise.reject(error)
+    }
   }
-})
+)
+
 
 
 export default {

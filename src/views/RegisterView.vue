@@ -3,8 +3,8 @@
   <div class="box">
     <h3>注册页面</h3>
     <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="手机号" prop="phone_number">
-        <el-input type="number" v-model="ruleForm.pthone_number" autocomplete="off"></el-input>
+      <el-form-item label="手机号" prop="username">
+        <el-input type="number" v-model="ruleForm.username" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="pass">
         <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
@@ -15,6 +15,7 @@
 
       <div class="item-button">
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+        <div class="toregister"><router-link to="/login" class="link" >已有账号？去登录</router-link></div>
       </div>
     </el-form>
   </div>
@@ -45,8 +46,7 @@ export default {
       ruleForm: {
         password: '',
         checkPass: '',
-        pthone_number: '',
-        ddt: '' 
+        username: '',
       },
       rules: {
         pass: [
@@ -62,19 +62,16 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post("/api/register/", {"phone_number": this.ruleForm.pthone_number, "password":this.ruleForm.password})
+          this.$axios.post("/api/newpass/", {"username": this.ruleForm.username, "password":this.ruleForm.password})
             .then(res => {
-              this.ddt = res.data
               this.$message({
                 type: 'success',
-                message: '注册成功',
+                message: '密码重置成功',
               })
               this.$router.push('/login')
-              
             })
             .catch(error =>{
-              this.ddt = error.data
-              this.$message.error('账号名重复！')
+              this.$message.error(error.response.data[0])
             })
         } 
       });
@@ -102,5 +99,10 @@ h3 {
   width: 220px;
   margin: 0 150px;
 
+}
+.item-button .toregister {
+  display: block;
+  float: right;
+  margin-top: 15px;
 }
 </style>
