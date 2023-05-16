@@ -43,7 +43,8 @@ export default {
               this.$router.push("/index")
             })
             .catch(error => {
-              this.$message.error(error.response.data[0])
+              console.log(error)
+              this.$message.error(error.response.data.non_field_errors[0])
             })
 
         }

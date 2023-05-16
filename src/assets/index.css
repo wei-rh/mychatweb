@@ -26,7 +26,7 @@ body {
 
 .left-container {
     height: 90%;
-    width: 160px;
+    width: 260px;
     min-width: 60px;
     max-width: 200px;
     border-radius: 4px;
@@ -49,6 +49,7 @@ body {
     display: none;
 }
 .newchat {
+    cursor: default;
     border-bottom: 0.5px solid #cccccc;
     border-top: 0.5px solid #cccccc;
     background-color: #EFEFEF;
@@ -58,6 +59,39 @@ body {
 .newchat:hover {
     background-color: #E8E8E8;
 }
+.session {
+    display: flex;
+    border-bottom: 0.5px solid #cccccc;
+    border-top: 0.5px solid #cccccc;
+    background-color: #EFEFEF;
+    padding: 10px;
+    color: #317d8a;
+  }
+.session:hover {
+    background-color: #E8E8E8;
+}
+  .session-title {
+    cursor: default;
+    flex: 1;
+    margin-left: 1rem;
+    white-space: nowrap; /* 不换行 */
+    overflow: hidden; /* 超出部分隐藏 */
+    text-overflow: ellipsis; /* 用省略号代替 */
+  }
+  
+  .session-actions {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end; /* 横向靠右对齐 */
+  }
+  
+  .session-actions i {
+    font-size: 1.25rem; /* 调整图标大小 */
+    cursor: pointer;
+    margin-right: 1rem;
+  }
+
+
 .chat:hover {
     background-color: #E8E8E8;
 }
@@ -184,3 +218,7 @@ button {
   .loading span:hover {
     color: #000;
   }
+
+
+
+

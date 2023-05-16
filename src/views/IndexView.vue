@@ -2,7 +2,15 @@
   <div class="all-container">
     <div class="left-container">
       <div class="chat-list">
-        <div class="newchat" id="newchat">+ New Chat</div>
+        <div class="newchat" id="newchat" @click="handleClick">+ New Chat</div>
+        <div v-for="(session) in sessions" :key="session.id" class="session">
+          <div class="session-title" >
+            {{ session.title }}
+          </div>
+          <div class="session-actions">
+            <i class="fa fa-trash" @click="deleteSession(session)"></i>
+          </div>
+        </div>
       </div>
     </div>
     <div class="right-container">
@@ -21,7 +29,8 @@
     </div>
   </div>
 </template>
-<style src="../components/index.css"></style>
+<style src="../assets/index.css"></style>
+<!-- 在头部引入 Font Awesome 样式文件 -->
 
 <script>
 export default {
@@ -33,7 +42,19 @@ export default {
       loading: false,
       loadtext: '显示之前的消息',
       is_stream: false,
-      is_history: true
+      is_history: true,
+      sessions: [
+        {
+          id: 'session-1',
+          title: 'Session 1',
+          history: [],
+        },
+        {
+          id: 'session-2',
+          title: 'Session 2',
+          history: [],
+        },
+      ],
     };
   },
   mounted() {
@@ -54,21 +75,8 @@ export default {
       this.$axios.post("/api/onechat/", { "sid": 0, "input_text": message, 'is_history': this.is_history }).then(res => {
         this.addMessage(res.data.answer, 'bot')
       }).catch(error => {
-              this.$message.error(error.response.data[0])
-            })
-    },
-    async sendStreamMessage() {
-      const message = this.currentMessage.trim();
-      this.addMessage(message, 'user');
-      this.currentMessage = '';
-      const self = this;
-      this.$axios.post('/api/onechatstream/', {"sid":"0", "input_text": message, 'is_history': this.is_history}, { responseType: 'stream' }).then(async function(res){ // 添加 async 关键字
-        self.addMessage('', 'bot')
-        for await (let chunk of res.data) { // 添加 for await 循环
-          self.updateMessage(chunk)
-          console.log(self.historyMessage[self.historyMessage.length-1]['content'])
-        }
-      });
+        this.$message.error(error.response.data[0])
+      })
     },
     getChatHistory() {
       // 请求聊天记录
@@ -87,7 +95,22 @@ export default {
       console.log(111)
       this.page++; // 页码加1
       this.getChatHistory(); // 获取下一页聊天记录
-    }
+    },
+    handleClick() {
+      const session = {
+        id: `session-${this.sessions.length + 1}`,
+        title: `Session ${this.sessions.length + 1}`,
+        history: [],
+      };
+      this.sessions.push(session);
+    },
+    deleteSession(session) {
+      const index = this.sessions.indexOf(session);
+      console.log(session)
+      this.sessions.splice(index, 1);
+    },
+
   },
+
 };
 </script>
