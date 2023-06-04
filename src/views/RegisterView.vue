@@ -83,7 +83,7 @@ export default {
 <style>
 .box {
   width: 500px;
-  height: 320px;
+  height: 250px;
   margin: 100px auto;
   padding: 20px;
   border: 1px solid #ccc;

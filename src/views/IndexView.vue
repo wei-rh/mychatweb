@@ -4,7 +4,7 @@
       <div class="chat-list">
         <div class="newchat" id="newchat" @click="handleClick">+ New Chat</div>
         <div v-for="(session) in sessions" :key="session.id" class="session">
-          <div class="session-title" >
+          <div class="session-title">
             {{ session.title }}
           </div>
           <div class="session-actions">
@@ -14,10 +14,13 @@
       </div>
     </div>
     <div class="right-container">
+
+
       <div class="content" ref="content">
         <button :disabled="this.loading" class="loading" @click="loadMore"><span>{{ this.loadtext }}</span></button>
         <div v-for="(message, index) in historyMessage" :key="index" :class="message.role + '-message'">
-          {{ message.content }}
+          <!-- {{ message.content }} -->
+          <pre v-html="parseMarkdown(message.content)"></pre>
         </div>
       </div>
       <div class="input-area">
@@ -33,6 +36,8 @@
 <!-- 在头部引入 Font Awesome 样式文件 -->
 
 <script>
+  import {marked} from 'marked';
+  import hljs from 'highlight.js';
 export default {
   data() {
     return {
@@ -61,6 +66,18 @@ export default {
     this.getChatHistory();
   },
   methods: {
+    parseMarkdown(text) {
+        const renderer = new marked.Renderer();
+        renderer.code = (code, language) => {
+          const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+          return `<pre><code class="hljs ${validLanguage}">${hljs.highlight(validLanguage, code).value}</code></pre>`;
+        };
+        marked.setOptions({
+          renderer,
+          highlight: (code) => hljs.highlightAuto(code).value,
+        });
+        return marked(text);
+      },
     addMessage(text, sender) {
       this.historyMessage.push({ role: sender, content: text });
     },
@@ -109,6 +126,7 @@ export default {
       console.log(session)
       this.sessions.splice(index, 1);
     },
+    
 
   },
 

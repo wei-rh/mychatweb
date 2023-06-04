@@ -2,6 +2,7 @@
   "name": "mychatweb",
   "version": "0.1.0",
   "private": true,
+  
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -11,7 +12,8 @@
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
     "element-plus": "^2.3.4",
-    "marked": "^5.0.0",
+    "highlight.js": "^11.8.0",
+    "marked": "^5.0.2",
     "vue": "^3.2.13",
     "vue-router": "^4.1.6"
   },

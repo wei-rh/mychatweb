@@ -4,7 +4,7 @@ import IndexView from '../views/IndexView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import RetrievePassword from '../views/RetrievePassword.vue'
-
+import Test from "../views/TestView.vue"
 import NotFound from '../views/NotFound.vue'
 
 const routes = [
@@ -41,6 +41,12 @@ const routes = [
     path: '/:catchAll(.*)',
     name: 'Not Found',
     component: NotFound
+  },
+  {
+    path: '/test',
+    name: 'Register',
+    component: Test,
+    meta: { requiresAuth: true }
   }
 ]
 const router = createRouter({

@@ -14,14 +14,16 @@ axios.interceptors.request.use(config => {
   return config
 })
 
-//响应拦截器
 axios.interceptors.response.use(
   response => response,
   error => {
     const { config, response } = error
     const originalRequest = config
     if (response.status === 401 && !originalRequest._retry) {
-      // token 失效，进入刷新 token 的流程
+      if (config.url === '/api/refresh/') {
+        // 刷新 token 的请求本身返回了 401 错误码，将错误抛出
+        return Promise.reject(error)
+      }
       if (isRefreshing) { // 正在刷新 token，将请求挂起
         return new Promise(resolve => {
           requests.push((token) => {
@@ -57,7 +59,6 @@ axios.interceptors.response.use(
     }
   }
 )
-
 export default {
   install: (app) => {
     app.config.globalProperties.$axios = axios
