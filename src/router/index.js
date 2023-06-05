@@ -44,7 +44,7 @@ const routes = [
   },
   {
     path: '/test',
-    name: 'Register',
+    name: 'test',
     component: Test,
     meta: { requiresAuth: true }
   }

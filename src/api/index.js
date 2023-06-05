@@ -8,6 +8,9 @@ let requests = [] // 存储待重发请求的数组
 
 //请求拦截器
 axios.interceptors.request.use(config => {
+  // config.headers['Access-Control-Allow-Origin'] = '*';
+  // config.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS';
+  // config.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, CSRF-Token';
   if (localStorage.elementToken) {
     config.headers.Authorization = localStorage.elementToken
   }
