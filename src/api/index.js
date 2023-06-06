@@ -1,8 +1,9 @@
 import axios from 'axios'
 import router from '@/router'
 
-axios.defaults.baseURL = "http://127.0.0.1:8000/"
-
+axios.defaults.baseURL = "http://8.217.192.250:8000/"
+// axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+// axios.defaults.headers.common['Access-Control-Allow-Credentials'] = true;
 let isRefreshing = false // 标记是否正在刷新 Token
 let requests = [] // 存储待重发请求的数组
 

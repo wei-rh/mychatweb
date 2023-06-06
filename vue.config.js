@@ -25,7 +25,12 @@ module.exports = {
         secure: false,
         pathRewite: {
             '/api': '/'
-        }
+        },
+        // headers: {
+        //   'Access-Control-Allow-Origin': '*',
+        //   'Access-Control-Allow-Credentials': true,
+        //   // 其他CORS相关设置
+        // },
       }
     }
   }

@@ -62,11 +62,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post("/api/newpass/", {"username": this.ruleForm.username, "password":this.ruleForm.password})
+          this.$axios.post("/api/register/", {"username": this.ruleForm.username, "password":this.ruleForm.password})
             .then(res => {
               this.$message({
                 type: 'success',
-                message: '密码重置成功',
+                message: '注册成功',
               })
               this.$router.push('/login')
             })
