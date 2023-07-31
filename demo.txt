@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ChatGPT Demo</title>
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #f0f0f0;
+      border-right: 1px solid #ccc;
+    }
+
+    .sidebar .nav {
+      padding: 20px;
+    }
+
+    .sidebar .session {
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar .session.active {
+      background-color: #333;
+      color: #fff;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: scroll;
+      padding: 20px;
+    }
+
+    .input-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-top: 1px solid #ccc;
+    }
+
+    .input-container input {
+      flex: 1;
+      padding: 10px;
+      margin-right: 10px;
+    }
+
+    .input-container button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <div class="nav">
+            <button id="createSessionBtn">创建新会话</button>
+            <hr>
+            <div id="sessionsList"></div>
+        </div>
+    </div>
+    <div class="main">
+        <div class="header">
+            <h1>ChatGPT Demo</h1>
+        </div>
+        <div class="messages" id="messages"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="输入消息...">
+            <button id="sendBtn">发送</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sessionsList = document.getElementById('sessionsList');
+    const createSessionBtn = document.getElementById('createSessionBtn');
+    const messagesDiv = document.getElementById('messages');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    let sessions = [];
+    let currentSession = null;
+
+    function createSession() {
+      const sessionName = prompt('请输入会话名称:');
+      if (sessionName) {
+        const newSession = {
+          name: sessionName,
+          messages: []
+        };
+        sessions.push(newSession);
+
+        const sessionElement = document.createElement('div');
+        sessionElement.textContent = sessionName;
+        sessionElement.classList.add('session');
+        sessionElement.addEventListener('click', () => {
+          switchSession(newSession);
+        });
+        sessionsList.appendChild(sessionElement);
+
+        switchSession(newSession);
+      }
+    }
+
+    function switchSession(session) {
+      currentSession = session;
+      renderMessages();
+      updateActiveSession();
+    }
+
+    function deleteSession() {
+      if (currentSession) {
+        const sessionIndex = sessions.indexOf(currentSession);
+        sessions.splice(sessionIndex, 1);
+
+        const sessionElement = sessionsList.querySelector('.session.active');
+        sessionElement.remove();
+
+        if (sessions.length > 0) {
+          switchSession(sessions[0]);
+        } else {
+          currentSession = null;
+          messagesDiv.innerHTML = '';
+        }
+      }
+    }
+
+    function updateActiveSession() {
+      const sessionElements = sessionsList.querySelectorAll('.session');
+      sessionElements.forEach(sessionElement => {
+        sessionElement.classList.remove('active');
+        if (sessionElement.textContent === currentSession.name) {
+          sessionElement.classList.add('active');
+        }
+      });
+    }
+
+    function renderMessages() {
+      messagesDiv.innerHTML = '';
+      currentSession.messages.forEach(message => {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        messagesDiv.appendChild(messageElement);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (message) {
+        currentSession.messages.push(message);
+
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        messagesDiv.appendChild(messageElement);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+        userInput.value = '';
+      }
+    }
+
+    createSessionBtn.addEventListener('click', createSession);
+    sendBtn.addEventListener('click', sendMessage);
+
+    // Demo: Creating a default session
+    const defaultSession = {
+      name: '默认会话',
+      messages: []
+    };
+    sessions.push(defaultSession);
+    switchSession(defaultSession);
+
+</script>
+</body>
+</html>
